@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Document</title>
+</head>
+<boby>
+    <div class="wrapper">
+        <header>
+            <h4>
+                タイマー
+            </h4>
+            <form id="from1">
+
+            </form>
+        </header>
+        <main>
+            <div id="tm_frame">
+
+                <div id="timeup_display" style="display:block"> </div> <br>
+                <div id="tm_display" style="display:block" ></div><br>
+                <input id="tm_input" type="time" value="00:00:03" step="1">
+                <br>
+                <button id="start_button" >
+                    スタート
+                </button>
+                <button id="reset_button" >
+                    リセット
+                </button>
+            </div>
+
+        </main>
+        <footer>
+            <font size="2">
+                <br>
+            </font>
+        </footer>
+    </div>
+</boby>
+
+<script>
+    let startButton = document.getElementById("start_button")
+    let tmDisplay = document.getElementById("tm_display")
+    let timeupDisplay = document.getElementById("timeup_display")
+
+    let resetButton = document.getElementById("reset_button")
+    let isWorking = false
+    let isTimeup = false
+    let intervalId = 0
+    let interval = 10
+    let tmVal = 0
+    let tmSec = 0
+
+    tmDisplay.textContent = tmSec2TmStr(tmVal)
+    timeupDisplay.innerText = " "
+    tmDisplay.setAttribute("style", "color:red;")
+
+    let tmInput = document.getElementById("tm_input")
+    console.log("tmInputArr")
+    resetTimer(resetButton)
+
+    startButton.addEventListener("click", function (evt) {
+        evt.preventDefault()
+        if (isTimeup == true) {
+            resetTimer(this)
+            isTimeup = false
+            startButton.textContent = "スタート"
+        }
+        else if (isWorking == false) {
+            isWorking = true
+            workTimer(this)
+        }
+        else {
+            isWorking = false
+            pauseTimer(this)
+        }
+    })
+    resetButton.addEventListener("click", function (evt) {
+        evt.preventDefault()
+        resetTimer(this)
+    })
+
+    function resetTimer(elm) {
+        if (isTimeup) {
+            startButton.textContent = "スタート"
+            isTimeup = false
+        }
+        let tmInputArr = tmInput.value.split(":")
+        timeupDisplay.innerText = " "
+        let sec = hhmmss2Sec(tmInputArr)
+        tmVal = sec * 1000 / interval
+        tmSec = sec
+        tmDisplay.innerText = tmSec2TmStr(tmSec)
+    }
+
+    function workTimer(elm) {
+        isWorking = true
+        tmDisplay.setAttribute("style", "color:darkblue;")
+        startButton.textContent = "ストップ"
+        intervalId = setInterval(function () {
+            tmVal--
+            tmSec = Math.round(tmVal * interval / 1000)
+            tmDisplay.innerText = tmSec2TmStr(tmSec)
+            if (tmVal <= 0) {
+                timeup(elm)
+            }
+        }, interval)
+    }
+    function timeup() {
+        timeupDisplay.innerText = "TIME UP"
+        isTimeup = true
+        isWorking = false
+        tmDisplay.setAttribute("style", "color:red;")
+        startButton.textContent = "リセット"
+        clearInterval(intervalId)
+    }
+    function pauseTimer(elm) {
+        isWorking = false
+        tmDisplay.setAttribute("style", "color:red;")
+        startButton.textContent = "スタート"
+        clearInterval(intervalId)
+    }
+
+    function hhmmss2Sec(arr) {
+        //[時,分,秒] を秒に直す
+        let sec = parseInt(arr[2])
+        sec += parseInt(arr[1]) * 60
+        sec += parseInt(arr[0]) * 3600
+        return sec
+    }
+
+    function tmSec2TmStr(tmSec) {
+        tmSecH = ("000" + parseInt(tmSec / 3600)).slice(-2)
+        tmSecM = ("000" + parseInt(tmSec / 60) % 60).slice(-2)
+        tmSecS = ("000" + parseInt(tmSec) % 60).slice(-2)
+        tmStr = tmSecH + ":" + tmSecM + ":" + tmSecS + ""
+        console.log("tmSec is " + tmSec)
+        return tmStr
+    }
+
+
+</script>
+<style>
+    #tm_display,
+    #timeup_display {
+        font-size: 2rem;
+        color: darkblue;
+    }
+
+    #timeup_display {
+        display: block;
+        color: red;
+
+    }
+
+    #start_button,
+    #reset_button {
+        color: blue;
+        margin-left: 1rem;
+        border: groove 3px blue;
+        border-radius: 10px;
+    }
+
+    header,
+    main,
+    footer {
+        width: clamp(200px, 50vw, 500px);
+        flex-basis: auto;
+        display: block;
+    }
+
+    header {
+        border: groove 3px cyan;
+        flex: 1;
+    }
+
+    main {
+        border: groove 3px blue;
+        flex: 0 3 auto;
+        /*  */
+        margin: 10px 0;
+    }
+
+    footer {
+        border: groove 3px green;
+        /* フッタを下にしようとするとリスト
+        が増えたときにかぶる */
+        /* position: absolute;
+        bottom: 0; */
+        flex: 1 0 auto;
+        /* display:box-sizing; */
+
+    }
+
+    div.wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        align-content: center;
+        justify-content: space-around;
+        /* width:clamp(200px,50vw,500px); */
+
+
+    }
+</style>
+
+</html>

@@ -94,10 +94,10 @@
             //入力欄の時間が変更されていればその時間にセット
             if(prevTmInputSec != getSecFromTmInput() ) {
                 resetTimer(this)
-                prevTmInputSec = getSecFromTmInput()
             }
             workTimer(this)
             isWorking = true
+            prevTmInputSec = getSecFromTmInput()
         }
         else {
             pauseTimer(this)

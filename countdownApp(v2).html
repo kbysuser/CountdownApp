@@ -97,12 +97,12 @@
             }
             workTimer(this)
             isWorking = true
-            prevTmInputSec = getSecFromTmInput()
         }
         else {
             pauseTimer(this)
             isWorking = false
         }
+        prevTmInputSec = getSecFromTmInput()
     })
     // リセットボタンの挙動
     resetButton.addEventListener("click", function (evt) {
